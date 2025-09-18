@@ -66,11 +66,10 @@ const ThreadView: React.FC<ThreadViewProps> = ({ message, channel, onClose }) =>
 
   const handleSendReply = async (content: string, attachments?: string[]) => {
     try {
-      await messageAPI.send({
-        channelId: channel.id,
+      await messageAPI.create({
+        channel_id: channel.id,
         content,
-        parentMessageId: message.id,
-        attachments,
+        parent_id: message.id,
       });
     } catch (error) {
       console.error('Error sending reply:', error);

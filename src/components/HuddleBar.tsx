@@ -21,7 +21,7 @@ const HuddleBar: React.FC<HuddleBarProps> = ({ huddle, onEnd }) => {
   
   const localStreamRef = useRef<MediaStream | null>(null);
   const peersRef = useRef<Map<string, SimplePeer.Instance>>(new Map());
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Start duration counter
@@ -162,7 +162,7 @@ const HuddleBar: React.FC<HuddleBarProps> = ({ huddle, onEnd }) => {
     }
     
     try {
-      await huddleAPI.updateSettings(huddle.id, { isAudioEnabled: !isAudioEnabled });
+      await huddleAPI.updateSettings(huddle.id, { audio_enabled: !isAudioEnabled });
     } catch (error) {
       console.error('Error updating audio settings:', error);
     }
@@ -194,7 +194,7 @@ const HuddleBar: React.FC<HuddleBarProps> = ({ huddle, onEnd }) => {
     }
     
     try {
-      await huddleAPI.updateSettings(huddle.id, { isVideoEnabled: !isVideoEnabled });
+      await huddleAPI.updateSettings(huddle.id, { video_enabled: !isVideoEnabled });
     } catch (error) {
       console.error('Error updating video settings:', error);
     }

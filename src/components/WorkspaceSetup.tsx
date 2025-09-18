@@ -30,7 +30,7 @@ const WorkspaceSetup: React.FC = () => {
       for (const channelName of defaultChannels) {
         await channelAPI.create({
           name: channelName,
-          workspaceId: newWorkspace.id,
+          workspace_id: newWorkspace.id,
           description: `Default ${channelName} channel`,
         });
       }

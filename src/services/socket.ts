@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = 'wss://slack-backend-morphvm-30337fn0.http.cloud.morph.so';
 
 class SocketService {
   private socket: Socket | null = null;
@@ -142,8 +142,27 @@ class SocketService {
     }
   }
 
+  // WebRTC signaling
+  sendOffer(targetUserId: string, offer: any): void {
+    if (this.socket) {
+      this.socket.emit('webrtc:offer', { target_user_id: targetUserId, offer });
+    }
+  }
+
+  sendAnswer(targetUserId: string, answer: any): void {
+    if (this.socket) {
+      this.socket.emit('webrtc:answer', { target_user_id: targetUserId, answer });
+    }
+  }
+
+  sendIceCandidate(targetUserId: string, candidate: any): void {
+    if (this.socket) {
+      this.socket.emit('webrtc:ice_candidate', { target_user_id: targetUserId, candidate });
+    }
+  }
+
   // Typing indicators
-  startTyping(channelId: string): void {
+  sendTyping(channelId: string): void {
     if (this.socket) {
       this.socket.emit('typing:start', { channel_id: channelId });
     }

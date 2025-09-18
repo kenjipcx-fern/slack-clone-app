@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = 'https://slack-backend-morphvm-30337fn0.http.cloud.morph.so';
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
@@ -161,6 +161,42 @@ export const channelAPI = {
   },
 };
 
+// Direct Message API
+export const dmAPI = {
+  create: (workspaceId: string, userId: string) =>
+    api.post('/channels/dm', { workspaceId, userId }),
+  list: (workspaceId: string) => api.get(`/channels/dm/${workspaceId}`),
+};
+
+// Reaction API
+export const reactionAPI = {
+  add: (messageId: string, emoji: string) =>
+    api.post(`/messages/${messageId}/reactions`, { emoji }),
+  remove: (messageId: string, emoji: string) =>
+    api.delete(`/messages/${messageId}/reactions/${emoji}`),
+};
+
+// Upload API
+export const uploadAPI = {
+  uploadFiles: async (files: File[]) => {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+    const response = await api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+};
+
+// Emoji API
+export const emojiAPI = {
+  getCategories: () => api.get('/emojis'),
+};
+
 // Message endpoints
 export const messageAPI = {
   list: async (channelId: string, limit: number = 50, before?: string) => {
@@ -280,8 +316,10 @@ export const huddleAPI = {
     return response.data;
   },
   
-  getActive: async (channelId: string) => {
-    const response = await api.get(`/huddles/active?channel_id=${channelId}`);
+  getActive: async (channelId?: string) => {
+    let url = '/huddles/active';
+    if (channelId) url += `?channel_id=${channelId}`;
+    const response = await api.get(url);
     return response.data;
   },
 };

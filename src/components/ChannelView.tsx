@@ -165,7 +165,7 @@ const ChannelView: React.FC<ChannelViewProps> = ({
   const loadMessages = async () => {
     setLoading(true);
     try {
-      const response = await messageAPI.getByChannel(channel.id);
+      const response = await messageAPI.list(channel.id);
       setMessages(response.data.reverse());
       setTimeout(scrollToBottom, 100);
     } catch (error) {
@@ -182,10 +182,9 @@ const ChannelView: React.FC<ChannelViewProps> = ({
 
   const handleSendMessage = async (content: string, attachments?: string[]) => {
     try {
-      await messageAPI.send({
-        channelId: channel.id,
+      await messageAPI.create({
+        channel_id: channel.id,
         content,
-        attachments,
       });
       scrollToBottom();
     } catch (error) {
