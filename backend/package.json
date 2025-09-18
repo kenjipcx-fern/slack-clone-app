@@ -8,7 +8,12 @@
     "init-db": "node init-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["slack", "chat", "messaging", "realtime"],
+  "keywords": [
+    "slack",
+    "chat",
+    "messaging",
+    "realtime"
+  ],
   "author": "",
   "license": "ISC",
   "description": "Backend for Slack clone application",
@@ -25,6 +30,7 @@
     "multer": "^2.0.2",
     "pg": "^8.16.3",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
