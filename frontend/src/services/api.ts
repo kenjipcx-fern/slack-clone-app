@@ -105,7 +105,7 @@ export const workspaceAPI = {
 // Channel endpoints
 export const channelAPI = {
   list: async (workspaceId: string) => {
-    const response = await api.get(`/channels?workspace_id=${workspaceId}`);
+    const response = await api.get(`/channels/workspace/${workspaceId}`);
     return response.data;
   },
   
@@ -200,7 +200,7 @@ export const emojiAPI = {
 // Message endpoints
 export const messageAPI = {
   list: async (channelId: string, limit: number = 50, before?: string) => {
-    let url = `/messages?channel_id=${channelId}&limit=${limit}`;
+    let url = `/messages/channel/${channelId}?limit=${limit}`;
     if (before) url += `&before=${before}`;
     const response = await api.get(url);
     return response.data;
@@ -284,7 +284,7 @@ export const userAPI = {
 // Huddle endpoints
 export const huddleAPI = {
   start: async (channelId: string) => {
-    const response = await api.post('/huddles/start', { channel_id: channelId });
+    const response = await api.post('/huddles/start', { channelId });
     return response.data;
   },
   

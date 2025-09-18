@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import ChannelView from './ChannelView';
 import ThreadView from './ThreadView';
 import HuddleBar from './HuddleBar';
+import DemoChannel from './DemoChannel';
 import { Channel, Message, Huddle } from '../types';
 import socketService from '../services/socket';
 import { huddleAPI } from '../services/api';
@@ -14,6 +15,7 @@ const Main: React.FC = () => {
   const [selectedThread, setSelectedThread] = useState<Message | null>(null);
   const [activeHuddle, setActiveHuddle] = useState<Huddle | null>(null);
   const [showThread, setShowThread] = useState(false);
+  const [showDemo, setShowDemo] = useState(true);
 
   useEffect(() => {
     // Check for active huddles
@@ -64,6 +66,29 @@ const Main: React.FC = () => {
     setSelectedThread(null);
   };
 
+  const handleStartDemoHuddle = () => {
+    // Create a demo huddle
+    const demoHuddle: Huddle = {
+      id: 'demo-huddle',
+      channelId: 'demo-general',
+      startedBy: 'demo-user',
+      startedAt: new Date().toISOString(),
+      participants: [
+        {
+          id: 'demo-user',
+          userId: 'demo-user',
+          huddleId: 'demo-huddle',
+          joinedAt: new Date().toISOString(),
+          audioEnabled: true,
+          videoEnabled: false,
+          screenSharing: false
+        }
+      ],
+      isActive: true
+    };
+    setActiveHuddle(demoHuddle);
+  };
+
   if (!currentWorkspace) {
     return null;
   }
@@ -111,6 +136,8 @@ const Main: React.FC = () => {
                 />
               )}
             </>
+          ) : showDemo ? (
+            <DemoChannel onStartHuddle={handleStartDemoHuddle} />
           ) : (
             <div className="flex-1 flex items-center justify-center bg-white">
               <div className="text-center">

@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const loadChannels = async () => {
     try {
       const response = await channelAPI.list(workspace.id);
-      setChannels(response.data.filter((ch: Channel) => !ch.isDm));
+      setChannels(response.filter((ch: Channel) => !ch.isDm));
     } catch (error) {
       console.error('Error loading channels:', error);
     }
@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const loadDMs = async () => {
     try {
       const response = await dmAPI.list(workspace.id);
-      setDms(response.data);
+      setDms(response);
     } catch (error) {
       console.error('Error loading DMs:', error);
     }
@@ -72,8 +72,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleCreateChannel = async (channelData: any) => {
     try {
       await channelAPI.create({
-        ...channelData,
-        workspaceId: workspace.id,
+        workspace_id: workspace.id,
+        name: channelData.name,
+        description: channelData.description,
+        is_private: channelData.isPrivate,
       });
       await loadChannels();
       toast.success('Channel created successfully');
