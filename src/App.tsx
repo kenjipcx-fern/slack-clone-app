@@ -1,55 +1,97 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './components/Login';
-import Register from './components/Register';
-import Main from './components/Main';
-import WorkspaceSetup from './components/WorkspaceSetup';
-
-function AppContent() {
-  const { user, loading, currentWorkspace } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-slack-dark">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
-  }
-
-  return (
-    <Routes>
-      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-      <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-      <Route path="/workspace-setup" element={user && !currentWorkspace ? <WorkspaceSetup /> : <Navigate to="/" />} />
-      <Route path="/" element={
-        user ? (
-          currentWorkspace ? <Main /> : <Navigate to="/workspace-setup" />
-        ) : (
-          <Navigate to="/login" />
-        )
-      } />
-    </Routes>
-  );
-}
+import LoginForm from './components/auth/LoginForm';
+import RegisterForm from './components/auth/RegisterForm';
+import Workspace from './components/workspace/Workspace';
+import WorkspaceSetup from './components/workspace/WorkspaceSetup';
+import useStore from './store/useStore';
 
 function App() {
+  const { isAuthenticated, user } = useStore();
+  
+  useEffect(() => {
+    // Check if user is stored in localStorage on mount
+    const storedUser = localStorage.getItem('user');
+    if (storedUser && !user) {
+      useStore.setState({ 
+        user: JSON.parse(storedUser),
+        isAuthenticated: true 
+      });
+    }
+  }, [user]);
+  
   return (
     <Router>
-      <AuthProvider>
-        <AppContent />
-        <Toaster 
-          position="top-center"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-          }}
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+        }}
+      />
+      
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/workspace" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
         />
-      </AuthProvider>
+        
+        <Route 
+          path="/login" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/workspace" replace />
+            ) : (
+              <LoginForm />
+            )
+          } 
+        />
+        
+        <Route 
+          path="/register" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/workspace/setup" replace />
+            ) : (
+              <RegisterForm />
+            )
+          } 
+        />
+        
+        <Route 
+          path="/workspace/setup" 
+          element={
+            isAuthenticated ? (
+              <WorkspaceSetup />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
+        
+        <Route 
+          path="/workspace" 
+          element={
+            isAuthenticated ? (
+              <Workspace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
+        
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Router>
   );
 }
