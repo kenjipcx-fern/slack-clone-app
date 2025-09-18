@@ -51,7 +51,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
       // Create default channel
       const channelResult = await client.query(
-        `INSERT INTO channels (workspace_id, name, description, created_by)
+        `INSERT INTO channels (workspace_id, name, description, creator_id)
          VALUES ($1, $2, $3, $4)
          RETURNING *`,
         [workspace.id, 'general', 'General discussion channel', req.user.id]

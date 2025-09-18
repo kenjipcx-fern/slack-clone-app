@@ -94,9 +94,9 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Update user online status
+    // Update user last seen
     await pool.query(
-      'UPDATE users SET is_online = true, last_seen = CURRENT_TIMESTAMP WHERE id = $1',
+      'UPDATE users SET last_seen = CURRENT_TIMESTAMP WHERE id = $1',
       [user.id]
     );
 
@@ -129,9 +129,9 @@ router.post('/login', async (req, res) => {
 // Logout
 router.post('/logout', authenticateToken, async (req, res) => {
   try {
-    // Update user offline status
+    // Update user last seen
     await pool.query(
-      'UPDATE users SET is_online = false, last_seen = CURRENT_TIMESTAMP WHERE id = $1',
+      'UPDATE users SET last_seen = CURRENT_TIMESTAMP WHERE id = $1',
       [req.user.id]
     );
 

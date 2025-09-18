@@ -36,7 +36,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     // Create channel
     const channelResult = await pool.query(
-      `INSERT INTO channels (workspace_id, name, description, is_private, created_by)
+      `INSERT INTO channels (workspace_id, name, description, is_private, creator_id)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
       [workspaceId, name.toLowerCase(), description, isPrivate, req.user.id]
@@ -396,7 +396,7 @@ router.post('/direct', authenticateToken, async (req, res) => {
 
     // Create direct message channel
     const channelResult = await pool.query(
-      `INSERT INTO channels (workspace_id, name, is_private, is_direct, created_by)
+      `INSERT INTO channels (workspace_id, name, is_private, is_direct, creator_id)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
       [workspaceId, `dm-${req.user.id}-${userId}`, true, true, req.user.id]
